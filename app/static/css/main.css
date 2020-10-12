@@ -1,0 +1,22 @@
+body {
+    font-family: "Arial", Helvetica, sans-serif;
+}
+
+.tweet {
+    padding: 9px;
+    font-family: "Lucidia Console", Courier, monospace;
+}
+
+.tweet-body {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.tweet-text {
+
+}
+
+.tweet-header {
+    font-weight: bold;
+}
