@@ -9,13 +9,14 @@ config = {
 
 class Tweet:
 
-    def __init__(self, tweet_id, text=None, author_id=None, conversation_id=None, quote_count=None, reply_count=None,
+    def __init__(self, tweet_id, text=None, conversation_id=None, urls=[], author_data=None, quote_count=None, reply_count=None,
                  retweet_count=None, like_count=None, **kwargs):
 
         self.id = tweet_id
         self.text = text
-        self.author_id = author_id
         self.conversation_id = conversation_id
+        self.urls = urls
+        self.author_data = author_data
         self.quote_count = quote_count
         self.reply_count = reply_count
         self.retweet_count = retweet_count
@@ -25,8 +26,9 @@ class Tweet:
         data = {
             'tweet_id': self.id,
             'text': self.text,
-            'author_id': self.author_id,
+            'author_data': self.author_data,
             'conversation_id': self.conversation_id,
+            'urls': self.urls,
             'quote_count': self.quote_count,
             'reply_count': self.reply_count,
             'retweet_count': self.retweet_count,
@@ -40,7 +42,6 @@ def parse_response(response_json):
     tweets = []
     data = response_json.get('data')
     if not data:
-        print(response_json)
         return []
     try:
         users = response_json['includes']['users']
@@ -56,13 +57,25 @@ def parse_response(response_json):
         author_id = tweet['author_id']
         text = tweet['text']
         conversation_id = tweet['conversation_id']
-        user = user_dict.get(tweet['author_id'])
-        author_metrics = user.get('public_metrics') if user else {}
+        author_data = user_dict.get(tweet['author_id'])
+        # print(author)
+        # author_name = author.get('name') if author else ''
+        # author_username = author.get('username') if author else ''
+        # author_metrics = author.get('public_metrics') if author else {}
+        # author_data = {
+        #     'id': author_id,
+        #     'name': author_name,
+        #     'username': author_username,
+        #     'metrics': author_metrics
+        # }
+        entities = tweet.get('entities', {})
+        urls = entities.get('urls')
         tweet_obj = Tweet(
             tweet_id,
             text,
-            author_id,
             conversation_id,
+            urls,
+            author_data,
             **tweet_metrics,
         )
         tweets.append(tweet_obj)
@@ -101,8 +114,8 @@ def query_recent(query, num_tweets=1, next_token=None):
     params = {
         'query': query,
         'expansions': 'author_id',
-        'tweet.fields': 'public_metrics,referenced_tweets,conversation_id',
-        'user.fields': 'public_metrics,verified',
+        'tweet.fields': 'public_metrics,referenced_tweets,conversation_id,entities',
+        'user.fields': 'public_metrics,verified,name,username',
     }
     for i in range(num_tweets//100):
         params['max_results'] = 100
@@ -122,6 +135,8 @@ if __name__=='__main__':
     query = 'dataset -is:reply -is:retweet -is:quote lang:en has:links'
     tweets, next_token = query_recent(query, num_tweets=10)
     for i, tweet in enumerate(tweets):
+        print(tweet.author_name)
+        continue
         print(i, tweet.text)
 
 

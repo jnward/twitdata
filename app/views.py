@@ -18,12 +18,11 @@ def load_tweets(next_token):
     print("Loading tweets with next_token:", next_token)
     if next_token == 'head':
         next_token = None
-    tweets, next_token = get_tweets(10, next_token)
+    tweets, next_token = get_tweets(100, next_token)
     if next_token is None:
         next_token = 'end'
     data = {'tweets_data': [tweet.json() for tweet in tweets],
             'next_token': next_token}
-    print(data)
     return jsonify(data)
 
 
@@ -37,7 +36,10 @@ def get_tweet_ids(num_ids=10, next_token=None):
 
 
 def get_tweets(num_ids=10, next_token=None):
-    query = 'dataset -is:reply -is:retweet -is:quote lang:en has:links'
+    # keywords = "new newly build built building collect collected collecting develop developed developing research create created creating release released releasing arxiv".split()
+    # keyword_str = "({})".format(" OR ".join(keywords))
+    # query = f'dataset {keyword_str} -is:reply -is:retweet -is:quote lang:en has:links'
+    query = 'arxiv -is:reply -is:retweet -is:quote lang:en has:links url:arxiv'
     tweets, next_token = query_recent(query, num_tweets=num_ids, next_token=next_token)
     return tweets, next_token
 

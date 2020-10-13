@@ -1,22 +1,47 @@
 body {
-    font-family: "Arial", Helvetica, sans-serif;
+    //font-family: "Source Serif Pro","Apple Garamond","Baskerville","Libre Baskerville","Times New Roman","Droid Serif","Times",serif;
+    font-family: Helvetica, Arial, sans-serif;
+    background-color: #FCFCFC;
+}
+
+a {
+    color: #505050;
 }
 
 .tweet {
     padding: 9px;
-    font-family: "Lucidia Console", Courier, monospace;
+    //font-family: "Lucidia Console", Courier, monospace;
 }
 
 .tweet-body {
-    border: 1px solid black;
+    //border: 1px solid #F0F0F0;
     border-radius: 5px;
     padding: 10px;
+    background-color: #E8E8E8;
 }
 
-.tweet-text {
-
+.tweet-content {
+    font-family: "Source Serif Pro","Apple Garamond","Baskerville","Libre Baskerville","Times New Roman","Droid Serif","Times",serif;
 }
 
 .tweet-header {
+}
+
+.author-name {
     font-weight: bold;
+}
+
+.author-username {
+    color: #808080;
+    margin: 0 0 0 10px;
+}
+
+.tweet-link {
+    float: right;
+}
+
+.tweet-container {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }

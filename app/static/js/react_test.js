@@ -33,14 +33,14 @@ ReactDOM.render(
     document.getElementById('content')
 );
 
-const tweets_pane = document.getElementById("tweets");
+const tweets_pane = document.getElementById("content");
 
 
-function displayTweets(tweet_ids) {
+function displayTweets(tweetsData) {
     // display embeded tweets given list of ids
-    for(tweet_id of tweet_ids) {
-        console.log(tweet_id);
-        twttr.widgets.createTweet(tweet_id.toString(), tweets_pane)
+    for(tweetData of tweetsData) {
+        console.log(tweetData);
+        twttr.widgets.createTweet(tweetData.tweet_id.toString(), tweets_pane)
         .then(function() {
             console.log('tweet added');
             loading -= 1;
@@ -49,35 +49,36 @@ function displayTweets(tweet_ids) {
 };
 
 
-$(window).scroll(function() {
-//    console.log('scrolling');
-//    console.log($(window).scrollTop());
-//    console.log($(document).scrollHeight);
-//    console.log($(document).height());
-//    console.log($(window).scrollTop());
-//    console.log($(window).height());
-    if($(window).scrollTop() + 3*$(window).height() >= $(document).height() - 0 && !loading) {
-        loading += 10;
-        console.log('got to bottom!');
-        $.ajax('/load_tweets/' + nextToken, {
-            success: function(data) {
-                displayTweets(data.tweet_ids);
-                nextToken = data.next_token;
-                console.log(data);
-            },
-            error: function() {
-                console.log('error');
-        }
-    });
-    }
-});
+//$(window).scroll(function() {
+////    console.log('scrolling');
+////    console.log($(window).scrollTop());
+////    console.log($(document).scrollHeight);
+////    console.log($(document).height());
+////    console.log($(window).scrollTop());
+////    console.log($(window).height());
+//    if($(window).scrollTop() + 3*$(window).height() >= $(document).height() - 0 && !loading) {
+//        loading += 10;
+//        console.log('got to bottom!');
+//        $.ajax('/load_tweets/' + nextToken, {
+//            success: function(data) {
+//                displayTweets(data.tweet_ids);
+//                nextToken = data.next_token;
+//                console.log(data);
+//            },
+//            error: function() {
+//                console.log('error');
+//        }
+//    });
+//    }
+//});
 
 
 const nextButton = $('#next-button')
 nextButton.click(function() {
-    $.ajax('/load_next/test_token', {
+    $.ajax('/load_tweets/' + nextToken, {
         success: function(data) {
-            displayTweets(data.tweet_ids);
+            displayTweets(data.tweets_data);
+            nextToken = data.next_token;
             console.log(data);
         },
         error: function() {
@@ -91,7 +92,7 @@ $(document).ready(function() {
     loading += 10;
     $.ajax('/load_tweets/' + nextToken, {
         success: function(data) {
-            displayTweets(data.tweet_ids);
+            displayTweets(data.tweets_data);
             nextToken = data.next_token;
             console.log(data);
         },

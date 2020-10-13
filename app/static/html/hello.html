@@ -14,25 +14,26 @@
       <h1>Real Twitter</h1>
       <br>
       <div id="content"></div>
+      <button id="next-button">More</button>
     </div>
-    <script>
-      window.twttr = (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0],
-          t = window.twttr || {};
-        if (d.getElementById(id)) return t;
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "https://platform.twitter.com/widgets.js";
-        fjs.parentNode.insertBefore(js, fjs);
+<!--    <script>-->
+<!--      window.twttr = (function(d, s, id) {-->
+<!--        var js, fjs = d.getElementsByTagName(s)[0],-->
+<!--          t = window.twttr || {};-->
+<!--        if (d.getElementById(id)) return t;-->
+<!--        js = d.createElement(s);-->
+<!--        js.id = id;-->
+<!--        js.src = "https://platform.twitter.com/widgets.js";-->
+<!--        fjs.parentNode.insertBefore(js, fjs);-->
 
-        t._e = [];
-        t.ready = function(f) {
-          t._e.push(f);
-        };
+<!--        t._e = [];-->
+<!--        t.ready = function(f) {-->
+<!--          t._e.push(f);-->
+<!--        };-->
 
-        return t;
-      }(document, "script", "twitter-wjs"));
-    </script>
+<!--        return t;-->
+<!--      }(document, "script", "twitter-wjs"));-->
+<!--    </script>-->
     <script type="text/javascript">
       var data = {{ data|tojson }};
     </script>
@@ -42,7 +43,7 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+<!--    <script src="{{ url_for('static', filename='js/react_test.js') }}" type="text/jsx"></script>-->
     <script src="{{ url_for('static', filename='js/display_tweets.js') }}" type="text/jsx"></script>
-    <script type="text/js">twttr.widgets.load();</script>
   </body>
 </html>
