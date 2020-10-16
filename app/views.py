@@ -1,11 +1,10 @@
-from flask import render_template, jsonify
+from flask import render_template, Flask, jsonify
 from twit_api import query_recent
-from tweet_papers import app
-from tweet_papers.database import Session
-from tweet_papers.database.models import Tweet, TwitterUser, URL
 
 
-print('def index')
+app = Flask(__name__, template_folder='static/html')
+
+
 @app.route('/')
 def index():
     tweet_ids = get_tweet_ids(2)
@@ -45,19 +44,6 @@ def get_tweets(num_ids=10, next_token=None):
     return tweets, next_token
 
 
-@app.route('/query_tweets/')
-def get_tweets_from_db():
-    print("Loading tweets with query:", None)
-    session = Session()
-    tweets = session.query(Tweet).order_by(Tweet.like_count.desc()).limit(100).all()
-    tweet_jsons = []
-    for tweet in tweets:
-        author = tweet.author
-        urls = tweet.urls
-        tweet_json = tweet.json()
-        tweet_json['author_data'] = author.json()
-        tweet_json['urls'] = [url.json() for url in urls]
-        tweet_jsons.append(tweet_json)
-        #print('#################################', jsonify(tweet_jsons).data)
-    return jsonify(tweet_jsons)
+
+
 
