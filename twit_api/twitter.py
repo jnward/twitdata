@@ -10,7 +10,7 @@ config = {
 class Tweet:
 
     def __init__(self, tweet_id, text=None, conversation_id=None, urls=[], author_data=None, quote_count=None, reply_count=None,
-                 retweet_count=None, like_count=None, **kwargs):
+                 retweet_count=None, like_count=None, created_at=None, **kwargs):
 
         self.id = tweet_id
         self.text = text
@@ -21,10 +21,11 @@ class Tweet:
         self.reply_count = reply_count
         self.retweet_count = retweet_count
         self.like_count = like_count
+        self.created_at = created_at
 
     def json(self):
         data = {
-            'tweet_id': self.id,
+            'id': self.id,
             'text': self.text,
             'author_data': self.author_data,
             'conversation_id': self.conversation_id,
@@ -32,7 +33,8 @@ class Tweet:
             'quote_count': self.quote_count,
             'reply_count': self.reply_count,
             'retweet_count': self.retweet_count,
-            'like_count': self.like_count
+            'like_count': self.like_count,
+            'created_at': str(self.created_at)
         }
 
         return data
@@ -57,6 +59,7 @@ def parse_response(response_json):
         author_id = tweet['author_id']
         text = tweet['text']
         conversation_id = tweet['conversation_id']
+        created_at = tweet['created_at']
         author_data = user_dict.get(tweet['author_id'])
         # print(author)
         # author_name = author.get('name') if author else ''
@@ -76,6 +79,7 @@ def parse_response(response_json):
             conversation_id,
             urls,
             author_data,
+            created_at = created_at,
             **tweet_metrics,
         )
         tweets.append(tweet_obj)
@@ -92,7 +96,9 @@ def _query_recent_with_next(params, next_token=None):
         params['next_token'] = next_token
     res = requests.get(url, headers=headers, params=params)
     if not res.status_code == 200:
-        pass  # TODO
+        print(res.status_code)
+        print(res.text)
+        pass  # TODO 503 etc
     try:
         output = res.json()
     except AttributeError as e:
@@ -114,7 +120,7 @@ def query_recent(query, num_tweets=1, next_token=None):
     params = {
         'query': query,
         'expansions': 'author_id',
-        'tweet.fields': 'public_metrics,referenced_tweets,conversation_id,entities',
+        'tweet.fields': 'public_metrics,referenced_tweets,conversation_id,entities,created_at',
         'user.fields': 'public_metrics,verified,name,username',
     }
     for i in range(num_tweets//100):
@@ -135,8 +141,6 @@ if __name__=='__main__':
     query = 'dataset -is:reply -is:retweet -is:quote lang:en has:links'
     tweets, next_token = query_recent(query, num_tweets=10)
     for i, tweet in enumerate(tweets):
-        print(tweet.author_name)
-        continue
-        print(i, tweet.text)
+        print(i, tweet.json())
 
 
