@@ -25,7 +25,7 @@ class Tweet extends React.Component {
                     <div className="tweet-header">
                         <span className="author-name">{this.data.author_data.name}</span>
                         <span className="author-username">@{this.data.author_data.username}</span>
-                        <a className="tweet-link" href={`https://twitter.com/user/status/${this.data.tweet_id}`}>Tweet</a>
+                        <a className="tweet-link" href={`https://twitter.com/user/status/${this.data.id}`}>Tweet</a>
                     </div>
                     <br/>
                     {this.generateContent()}
@@ -48,23 +48,53 @@ class TweetContainer extends React.Component {
         this.handleClick();
     }
 
+//    updateTweets(data) {
+//        let tweets = [];
+//        let tweetData;
+//        let sortedData = data.tweets_data.sort(function(a,b){return b.like_count - a.like_count});
+//        for (tweetData of sortedData) {
+//            //let text = parseUrls(tweetData.text, tweetData.urls)
+//            tweets.push(
+//                <Tweet tweet_id={tweetData.id} text={tweetData.text} data={tweetData}/>
+//            );
+//        }
+//        tweets = tweets.sort(function(a,b){})
+//        this.setState({nextToken: data.next_token});
+//        this.setState({tweets: this.state.tweets.concat(tweets)});
+//    }
+
+//    handleClick() {
+//        console.log('click');
+//        console.log(this.state.tweets);
+//        let updateTweets = this.updateTweets;
+//        $.ajax('/load_tweets/' + this.state.nextToken, {
+//            success: updateTweets,
+//            error: function() {
+//                console.log('error');
+//            }
+//        });
+//    }
     updateTweets(data) {
         let tweets = [];
         let tweetData;
-        for (tweetData of data.tweets_data) {
+        console.log(data);
+        //let sortedData = data.tweets_data.sort(function(a,b){return b.like_count - a.like_count});
+        for (tweetData of data) {
             //let text = parseUrls(tweetData.text, tweetData.urls)
             tweets.push(
-                <Tweet tweet_id={tweetData.tweet_id} text={tweetData.text} data={tweetData}/>
+                <Tweet tweet_id={tweetData.id} text={tweetData.text} data={tweetData}/>
             );
         }
-        this.setState({nextToken: data.next_token});
+//        tweets = tweets.sort(function(a,b){})
+//        this.setState({nextToken: data.next_token});
         this.setState({tweets: this.state.tweets.concat(tweets)});
     }
 
     handleClick() {
         console.log('click');
+        console.log(this.state.tweets);
         let updateTweets = this.updateTweets;
-        $.ajax('/load_tweets/' + this.state.nextToken, {
+        $.ajax('/query_tweets/', {
             success: updateTweets,
             error: function() {
                 console.log('error');
