@@ -14,7 +14,7 @@ def index():
     return render_template('hello.html', data=data)
 
 
-@app.route('/load_tweets/<next_token>')
+#@app.route('/load_tweets/<next_token>')
 def load_tweets(next_token):
     print("Loading tweets with next_token:", next_token)
     if next_token == 'head':
@@ -45,11 +45,19 @@ def get_tweets(num_ids=10, next_token=None):
     return tweets, next_token
 
 
-@app.route('/query_tweets/')
-def get_tweets_from_db():
-    print("Loading tweets with query:", None)
+@app.route('/query_tweets/<sort_by>')
+def get_tweets_from_db(sort_by):
+    print("Loading tweets with query:", sort_by)
     session = Session()
-    tweets = session.query(Tweet).order_by(Tweet.like_count.desc()).limit(100).all()
+    tweets = session.query(Tweet)
+    if sort_by == 'replies':
+        tweets = tweets.order_by(Tweet.reply_count.desc())
+    elif sort_by == 'retweets':
+        tweets = tweets.order_by((Tweet.retweet_count + Tweet.quote_count).desc())
+    else:
+        tweets = tweets.order_by(Tweet.like_count.desc())
+    tweets = tweets.limit(100).all()
+
     tweet_jsons = []
     for tweet in tweets:
         author = tweet.author
@@ -58,6 +66,5 @@ def get_tweets_from_db():
         tweet_json['author_data'] = author.json()
         tweet_json['urls'] = [url.json() for url in urls]
         tweet_jsons.append(tweet_json)
-        #print('#################################', jsonify(tweet_jsons).data)
     return jsonify(tweet_jsons)
 

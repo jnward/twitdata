@@ -1,5 +1,21 @@
 /*** @jsx React.DOM */
 
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <div className="application">
+                <h1>twitXiv</h1>
+                <p id='subtitle'>Stay up-to-date on the most buzzed about papers posted to Twitter in the past 7 days.</p>
+                <TweetContainer/>
+            </div>
+        )
+    }
+}
+
 class Tweet extends React.Component {
     constructor(props) {
         super(props);
@@ -7,6 +23,26 @@ class Tweet extends React.Component {
         this.text = this.props.text;
         this.data = this.props.data;
         this.categories = ["Cat1", "Cat2"]
+    }
+
+    getColor() {
+        console.log('Getting color for ', this.tweet_id);
+        let createdAt = new Date(this.data.created_at);
+        let now = new Date();
+        let age = Math.min(7, (now - createdAt) / (1000 * 60 * 60 * 24));  // days
+        let expAge = Math.exp(age/7)/Math.E;
+        //let expAge = age/7;
+        console.log(expAge);
+        //let red = Math.max(192, 127 + Math.round(127 * (1 - age / 7)));
+        //let blue = Math.max(192, 127 + Math.round(127 * age / 7));
+        let green = 192 + Math.round(12 * (1 - expAge));
+        let red = 192 - Math.round(0 * (1 - age/7)) - Math.round(50 * (1 - expAge));
+        let blue = 192 + Math.round(63 * (1 - expAge));
+        //let blue = 192 + Math.round(8 * (1 - expAge));
+        //let styleStr = "background-color:rgb(${red}, ${green}, ${blue});";
+        let styleStr = `rgb(${red}, ${green}, ${blue})`;
+        //return "green";
+        return styleStr;
     }
 
     generateContent() {
@@ -18,17 +54,30 @@ class Tweet extends React.Component {
         return <div className="tweet-content" dangerouslySetInnerHTML={{__html: content}}></div>
     }
 
+    generateFooter() {
+        return (
+            <div className="tweet-footer">
+                <span className="tweet-reply-counter">💬 {this.data.reply_count}</span>
+                <span className="tweet-retweet-counter">🔁 {this.data.retweet_count + this.data.quote_count}</span>
+                <span className="tweet-like-counter">❤️ {this.data.like_count}</span>
+            </div>
+        )
+    }
+
     render() {
+        console.log('Rendering ', this.tweet_id);
         return (
             <div className="tweet">
-                <div className="tweet-body">
+                <div className="tweet-body" style={{backgroundColor:this.getColor()}}>
                     <div className="tweet-header">
                         <span className="author-name">{this.data.author_data.name}</span>
                         <span className="author-username">@{this.data.author_data.username}</span>
-                        <a className="tweet-link" href={`https://twitter.com/user/status/${this.data.id}`}>Tweet</a>
+                        <a className="tweet-link" href={`https://twitter.com/user/status/${this.data.id}`} target="_blank">Tweet</a>
                     </div>
                     <br/>
                     {this.generateContent()}
+                    <br/>
+                    {this.generateFooter()}
                 </div>
             </div>
         );
@@ -42,59 +91,30 @@ class TweetContainer extends React.Component {
             tweets: [],
             nextToken: 'head'
         }
-        this.handleClick = this.handleClick.bind(this);
+        this.getTweets = this.getTweets.bind(this);
         this.updateTweets = this.updateTweets.bind(this);
 
-        this.handleClick();
+        this.getTweets();
     }
 
-//    updateTweets(data) {
-//        let tweets = [];
-//        let tweetData;
-//        let sortedData = data.tweets_data.sort(function(a,b){return b.like_count - a.like_count});
-//        for (tweetData of sortedData) {
-//            //let text = parseUrls(tweetData.text, tweetData.urls)
-//            tweets.push(
-//                <Tweet tweet_id={tweetData.id} text={tweetData.text} data={tweetData}/>
-//            );
-//        }
-//        tweets = tweets.sort(function(a,b){})
-//        this.setState({nextToken: data.next_token});
-//        this.setState({tweets: this.state.tweets.concat(tweets)});
-//    }
-
-//    handleClick() {
-//        console.log('click');
-//        console.log(this.state.tweets);
-//        let updateTweets = this.updateTweets;
-//        $.ajax('/load_tweets/' + this.state.nextToken, {
-//            success: updateTweets,
-//            error: function() {
-//                console.log('error');
-//            }
-//        });
-//    }
     updateTweets(data) {
         let tweets = [];
         let tweetData;
         console.log(data);
-        //let sortedData = data.tweets_data.sort(function(a,b){return b.like_count - a.like_count});
         for (tweetData of data) {
-            //let text = parseUrls(tweetData.text, tweetData.urls)
             tweets.push(
                 <Tweet tweet_id={tweetData.id} text={tweetData.text} data={tweetData}/>
             );
         }
-//        tweets = tweets.sort(function(a,b){})
-//        this.setState({nextToken: data.next_token});
-        this.setState({tweets: this.state.tweets.concat(tweets)});
+        this.setState({tweets: []});
+        this.setState({tweets: tweets});
+        //this.setState({tweets: this.state.tweets.concat(tweets)});
     }
 
-    handleClick() {
-        console.log('click');
+    getTweets(sortBy='replies') {
         console.log(this.state.tweets);
         let updateTweets = this.updateTweets;
-        $.ajax('/query_tweets/', {
+        $.ajax('/query_tweets/' + sortBy, {
             success: updateTweets,
             error: function() {
                 console.log('error');
@@ -105,14 +125,27 @@ class TweetContainer extends React.Component {
     render() {
         return (
             <div className="tweet-container">
-                {this.state.tweets}
-                <button onClick={this.handleClick}>Get new Tweets</button>
+                <div className="content-header">
+                    <div className="sort-controls">Sort by:
+                        <button onClick={() => this.getTweets('likes')}>Likes</button>
+                        <button onClick={() => this.getTweets('retweets')}>Retweets</button>
+                        <button onClick={() => this.getTweets('replies')}>Replies</button>
+                    </div>
+                    <div className="tweet-age-key">
+                        <span className="tweet-age-key-old">Old</span>
+                        <span className="tweet-age-key-new">New</span>
+
+                    </div>
+                </div>
+                <div className="tweet-container-content">
+                    {this.state.tweets}
+                </div>
             </div>
         )
     }
 }
 
 ReactDOM.render(
-    <TweetContainer/>,
-    document.getElementById('content')
+    <App/>,
+    document.getElementById('application-container')
 );

@@ -119,9 +119,10 @@ def query_recent(query, num_tweets=1, next_token=None):
     end = False
     params = {
         'query': query,
-        'expansions': 'author_id',
+        'expansions': 'author_id,attachments.media_keys',
         'tweet.fields': 'public_metrics,referenced_tweets,conversation_id,entities,created_at',
         'user.fields': 'public_metrics,verified,name,username',
+        'media.fields': 'preview_image_url,public_metrics',
     }
     for i in range(num_tweets//100):
         params['max_results'] = 100
@@ -139,7 +140,7 @@ def query_recent(query, num_tweets=1, next_token=None):
 
 if __name__=='__main__':
     query = 'dataset -is:reply -is:retweet -is:quote lang:en has:links'
-    tweets, next_token = query_recent(query, num_tweets=10)
+    tweets, next_token = query_recent(query, num_tweets=100)
     for i, tweet in enumerate(tweets):
         print(i, tweet.json())
 

@@ -8,6 +8,10 @@ a {
     color: #505050;
 }
 
+h1 {
+    text-align: center;
+}
+
 .tweet {
     padding: 9px;
     //font-family: "Lucidia Console", Courier, monospace;
@@ -22,9 +26,13 @@ a {
 
 .tweet-content {
     font-family: "Source Serif Pro","Apple Garamond","Baskerville","Libre Baskerville","Times New Roman","Droid Serif","Times",serif;
+    //font-family: "Lucidia Console", Courier, monospace;
+    //font-family: Helvetica, Arial, sans-serif;
+    font-size: 22px;
 }
 
 .tweet-header {
+    font-size: 22px;
 }
 
 .author-name {
@@ -33,15 +41,89 @@ a {
 
 .author-username {
     color: #808080;
-    margin: 0 0 0 10px;
+    margin-left: 10px;
+    font-size: 18px;
+
 }
 
 .tweet-link {
     float: right;
+    font-size: 18px;
 }
 
-.tweet-container {
-    width: 800px;
+.application {
+    width: 900px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.tweet-footer {
+    position: relative;
+    height: 22px;
+    font-size: 18px;
+}
+
+.tweet-reply-counter {
+    position: absolute;
+    left: 0px;
+}
+
+.tweet-retweet-counter {
+    position: absolute;
+    left: 80px;
+}
+
+.tweet-like-counter {
+    position: absolute;
+    left: 160px;
+}
+
+.content-header {
+    height: 38px;
+    padding-bottom: 20px;
+    margin:0;
+}
+
+.sort-controls {
+    float: right;
+    margin: 9px;
+    overflow: hidden;
+}
+
+.sort-controls button {
+    cursor: pointer;
+    background-color: rgb(192, 192, 192);
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-left: 15px;
+    font-size: 18px;
+}
+
+.sort-controls button:hover {
+    background-color: rgb(212, 212, 212);
+}
+
+.tweet-age-key {
+    float: left;
+    width: 247px;
+    background: linear-gradient(90deg, rgb(192, 192, 192), rgb(142, 204, 255));
+    border-radius: 5px;
+    padding: 10px;
+    margin: 9px;
+    overflow: hidden;
+    font-size: 18px;
+
+}
+
+.tweet-age-key-old {
+}
+
+.tweet-age-key-new {
+    float: right;
+}
+
+#subtitle {
+    text-align: center;
+    font-size:18px;
 }
