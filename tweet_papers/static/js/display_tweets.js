@@ -49,7 +49,7 @@ class Tweet extends React.Component {
         let urlData;
         let content = this.text;
         for(urlData of this.data.urls) {
-            content = content.replace(urlData.url, `<a href=${urlData.expanded_url}>${urlData.display_url}</a>`);
+            content = content.replace(urlData.url, `<a href=${urlData.expanded_url} target="_blank">${urlData.display_url}</a>`);
         }
         return <div className="tweet-content" dangerouslySetInnerHTML={{__html: content}}></div>
     }
@@ -111,7 +111,7 @@ class TweetContainer extends React.Component {
         //this.setState({tweets: this.state.tweets.concat(tweets)});
     }
 
-    getTweets(sortBy='replies') {
+    getTweets(sortBy='likes') {
         console.log(this.state.tweets);
         let updateTweets = this.updateTweets;
         $.ajax('/query_tweets/' + sortBy, {

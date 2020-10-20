@@ -1,7 +1,7 @@
 from tweet_papers.views import query_recent
 from tweet_papers.database import Session
 from tweet_papers.database.models import Tweet, TwitterUser, URL
-from datetime import datetime
+from datetime import datetime, timedelta
 import schedule
 import time
 
@@ -18,6 +18,18 @@ def update_db(num_queries=450):
         queries += 1
         if next_token is None:
             break
+    print('Removing expired records ...')
+    remove_old()
+    print('Finished updating.')
+
+
+def remove_old():
+    session = Session()
+    session.query(Tweet).filter(Tweet.created_at < datetime.now() - timedelta(days=7)).delete()
+    session.commit()
+    users = session.query(TwitterUser.id).join(Tweet, isouter=True).filter(Tweet.id == None).subquery()
+    session.query(TwitterUser).filter(TwitterUser.id.in_(users)).delete(synchronize_session='fetch')
+    session.commit()
 
 
 def push_to_db(tweets):
@@ -53,6 +65,7 @@ def push_to_db(tweets):
 
 
 if __name__ == '__main__':
+    update_db()
     schedule.every(30).minutes.do(update_db)
     while True:
         schedule.run_pending()
