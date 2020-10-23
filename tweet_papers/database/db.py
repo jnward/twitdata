@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 import os
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -12,7 +12,7 @@ engine = create_engine(
     SQLALCHEMY_DATABASE_URI
 )
 
-Session = sessionmaker(autocommit=False, autoflush=True, bind=engine)
+Session = scoped_session(sessionmaker(autocommit=False, autoflush=True, bind=engine))
 
 print('declaring Base')
 Base = declarative_base()

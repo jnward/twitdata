@@ -1,9 +1,8 @@
 import requests
-import json
+import os
 
 config = {
-    'bearer_token': 'AAAAAAAAAAAAAAAAAAAAAA0HHwEAAAAAKScBILbQtnhkuRXlV3Zdw2ycS48%3DghnmP4cp4Wfgf53xOdW5GR5eOmr0bsHWJgDo\
-579YdHE7KwLPO3'
+    'bearer_token': os.getenv('TWITTER_API_TOKEN')
 }
 
 

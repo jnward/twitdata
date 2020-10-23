@@ -4,11 +4,11 @@ from tweet_papers.database.models import Tweet, TwitterUser, URL
 from datetime import datetime, timedelta
 import schedule
 import time
+import logging
 
 
 def update_db(num_queries=450):
-    query = '-is:reply -is:retweet -is:quote lang:en has:links url:arxiv'
-    next_token = 'b26v89c19zqg8o3fos8uh240sf8nh52vb2dfluz3em6il'
+    query = '-is:reply -is:retweet -is:quote lang:en has:links (url:arxiv OR url:biorxicv OR url:medrxiv)'
     next_token = None
     queries = 0
     while queries < num_queries:
@@ -64,9 +64,15 @@ def push_to_db(tweets):
     session.commit()
 
 
+def ping():
+    print('Pong!')
+    logging.info('Pong!')
+
+
 if __name__ == '__main__':
     update_db()
-    schedule.every(30).minutes.do(update_db)
+    schedule.every(24).hours.do(update_db)
+    schedule.every(1).minutes.do(ping)
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(30)

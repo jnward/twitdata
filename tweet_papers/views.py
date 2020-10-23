@@ -40,7 +40,7 @@ def get_tweets(num_ids=10, next_token=None):
     # keywords = "new newly build built building collect collected collecting develop developed developing research create created creating release released releasing arxiv".split()
     # keyword_str = "({})".format(" OR ".join(keywords))
     # query = f'dataset {keyword_str} -is:reply -is:retweet -is:quote lang:en has:links'
-    query = 'arxiv -is:reply -is:retweet -is:quote lang:en has:links url:arxiv'
+    query = '-is:reply -is:retweet -is:quote lang:en has:links (url:arxiv OR url:biorxicv OR url:medrxiv)'
     tweets, next_token = query_recent(query, num_tweets=num_ids, next_token=next_token)
     return tweets, next_token
 
