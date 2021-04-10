@@ -9,7 +9,8 @@ SQLALCHEMY_DATABASE_URI = f'sqlite:////{database_path}'
 MYSQL_CHARSET = 'utf8mb4'  # emoji compatibility
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URI
+    SQLALCHEMY_DATABASE_URI,
+    echo=True
 )
 
 Session = scoped_session(sessionmaker(autocommit=False, autoflush=True, bind=engine))

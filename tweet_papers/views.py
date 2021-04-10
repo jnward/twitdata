@@ -3,7 +3,12 @@ from twit_api import query_recent
 from tweet_papers import app
 from tweet_papers.database import Session
 from tweet_papers.database.models import Tweet, TwitterUser, URL
+from werkzeug.utils import import_string
+from flask_caching import Cache
 
+cache = Cache(app, config={'CACHE_TYPE': 'filesystem',
+                           'CACHE_DIR': "/home/ubuntu/twitdata/tweet_papers/cache/",
+                           'CACHE_THRESHOLD': 1000000})
 
 print('def index')
 @app.route('/')
@@ -46,10 +51,11 @@ def get_tweets(num_ids=10, next_token=None):
 
 
 @app.route('/query_tweets/<sort_by>')
+@cache.cached(timeout=50)
 def get_tweets_from_db(sort_by):
     print("Loading tweets with query:", sort_by)
     session = Session()
-    tweets = session.query(Tweet)
+    tweets = session.query(Tweet, TwitterUser, URL).join(TwitterUser).join(URL)
     if sort_by == 'replies':
         tweets = tweets.order_by(Tweet.reply_count.desc())
     elif sort_by == 'retweets':
@@ -57,14 +63,18 @@ def get_tweets_from_db(sort_by):
     else:
         tweets = tweets.order_by(Tweet.like_count.desc())
     tweets = tweets.limit(100).all()
-
-    tweet_jsons = []
-    for tweet in tweets:
-        author = tweet.author
-        urls = tweet.urls
+    print('got tweets')
+    tweet_jsons = {}
+    for tweet, author, url in tweets:
+        print(tweet.id)
         tweet_json = tweet.json()
         tweet_json['author_data'] = author.json()
-        tweet_json['urls'] = [url.json() for url in urls]
-        tweet_jsons.append(tweet_json)
-    return jsonify(tweet_jsons)
+        tweet_jsons[tweet.id] = tweet_json
+        if tweet_jsons[tweet.id].get('urls') is not None:
+            tweet_jsons[tweet.id]['urls'] += url.json()
+        else:
+            tweet_jsons[tweet.id]['urls'] = [url.json()]
+    print('parsed tweets')
+    print(len(tweet_jsons))
+    return jsonify(list(tweet_jsons.values()))
 
