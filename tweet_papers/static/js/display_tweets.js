@@ -26,22 +26,13 @@ class Tweet extends React.Component {
     }
 
     getColor() {
-        console.log('Getting color for ', this.tweet_id);
         let createdAt = new Date(this.data.created_at);
         let now = new Date();
         let age = Math.min(7, (now - createdAt) / (1000 * 60 * 60 * 24));  // days
         let expAge = Math.exp(age/7)/Math.E;
-        //let expAge = age/7;
-        console.log(expAge);
-        //let red = Math.max(192, 127 + Math.round(127 * (1 - age / 7)));
-        //let blue = Math.max(192, 127 + Math.round(127 * age / 7));
         let green = 192 + Math.round(12 * (1 - expAge));
         let red = 192 - Math.round(0 * (1 - age/7)) - Math.round(50 * (1 - expAge));
-        let blue = 192 + Math.round(63 * (1 - expAge));
-        //let blue = 192 + Math.round(8 * (1 - expAge));
-        //let styleStr = "background-color:rgb(${red}, ${green}, ${blue});";
-        let styleStr = `rgb(${red}, ${green}, ${blue})`;
-        //return "green";
+        let blue = 192 + Math.round(63 * (1 - expAge));let styleStr = `rgb(${red}, ${green}, ${blue})`;
         return styleStr;
     }
 
@@ -65,7 +56,6 @@ class Tweet extends React.Component {
     }
 
     render() {
-        console.log('Rendering ', this.tweet_id);
         return (
             <div className="tweet">
                 <div className="tweet-body" style={{backgroundColor:this.getColor()}}>
@@ -100,7 +90,6 @@ class TweetContainer extends React.Component {
     updateTweets(data) {
         let tweets = [];
         let tweetData;
-        console.log(data);
         for (tweetData of data) {
             tweets.push(
                 <Tweet tweet_id={tweetData.id} text={tweetData.text} data={tweetData}/>
@@ -108,11 +97,9 @@ class TweetContainer extends React.Component {
         }
         this.setState({tweets: []});
         this.setState({tweets: tweets});
-        //this.setState({tweets: this.state.tweets.concat(tweets)});
     }
 
     getTweets(sortBy='likes') {
-        console.log(this.state.tweets);
         let updateTweets = this.updateTweets;
         $.ajax('/query_tweets/' + sortBy, {
             success: updateTweets,
