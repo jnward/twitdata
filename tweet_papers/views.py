@@ -46,7 +46,7 @@ def get_tweets(num_ids=10, next_token=None):
 
 
 @app.route('/query_tweets/<sort_by>')
-@cache.cached(timeout=50)
+@cache.cached(timeout=3600)
 def get_tweets_from_db(sort_by):
     print("Loading tweets with query:", sort_by)
     session = Session()
