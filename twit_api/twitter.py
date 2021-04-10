@@ -42,6 +42,7 @@ class Tweet:
 def parse_response(response_json):
     tweets = []
     data = response_json.get('data')
+    print(data)
     if not data:
         return []
     try:

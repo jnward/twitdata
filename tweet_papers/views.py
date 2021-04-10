@@ -13,10 +13,7 @@ cache = Cache(app, config={'CACHE_TYPE': 'filesystem',
 
 @app.route('/')
 def index():
-    tweet_ids = get_tweet_ids(2)
-    data = {'val': 'test_val',
-            'tweet_ids': tweet_ids}
-    return render_template('hello.html', data=data)
+    return render_template('hello.html', data={})
 
 
 #@app.route('/load_tweets/<next_token>')
