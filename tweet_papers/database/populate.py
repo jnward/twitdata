@@ -7,7 +7,7 @@ import time
 import logging
 
 
-def update_db(num_queries=450):
+def update_db(num_queries=200):
     query = '-is:reply -is:retweet -is:quote lang:en has:links (url:arxiv OR url:biorxicv OR url:medrxiv)'
     next_token = None
     queries = 0
