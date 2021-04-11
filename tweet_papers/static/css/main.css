@@ -125,5 +125,10 @@ h1 {
 
 #subtitle {
     text-align: center;
-    font-size:18px;
+    font-size: 18px;
+}
+
+#bot-link {
+    text-align: center;
+    font-size: 18px;
 }

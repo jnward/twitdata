@@ -9,7 +9,8 @@ class App extends React.Component {
         return (
             <div className="application">
                 <h1>twitXiv</h1>
-                <p id='subtitle'>Stay up-to-date on the most buzzed about papers posted to Twitter in the past 7 days.</p>
+                <p id="subtitle">Stay up-to-date on the most buzzed about papers posted to Twitter in the past 7 days.</p>
+                <p id="bot-link"><a href="https://twitter.com/twitXiv">Follow the Twitter bot!</a></p>
                 <TweetContainer/>
             </div>
         )
