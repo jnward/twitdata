@@ -22,4 +22,5 @@ if __name__ == '__main__':
     schedule.every(2).hours.do(retweet_top_unretweeted)
     while True:
         schedule.run_pending()
-        time.sleep(600)
+        time.sleep(60)
+        print("Bot Pong!")
