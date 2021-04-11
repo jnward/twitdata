@@ -1,8 +1,15 @@
 import requests
 import os
+from requests_oauthlib import OAuth1Session
+
+
 
 config = {
-    'bearer_token': os.getenv('TWITTER_API_TOKEN')
+    'bearer_token': os.getenv('TWITTER_BEARER_TOKEN'),
+    'consumer_key': os.getenv('TWITTER_CONSUMER_KEY'),
+    'consumer_secret': os.getenv('TWITTER_CONSUMER_SECRET'),
+    'access_token': os.getenv('TWITTER_ACCESS_TOKEN'),
+    'token_secret': os.getenv('TWITTER_SECRET_TOKEN'),
 }
 
 
@@ -42,7 +49,6 @@ class Tweet:
 def parse_response(response_json):
     tweets = []
     data = response_json.get('data')
-    print(data)
     if not data:
         return []
     try:
@@ -138,10 +144,32 @@ def query_recent(query, num_tweets=1, next_token=None):
     return tweets[:num_tweets], next_token
 
 
+def retweet(tweet_id):
+    consumer_key = config.get('consumer_key')
+    consumer_secret = config.get('consumer_secret')
+    access_token = config.get('access_token')
+    token_secret = config.get('token_secret')
+    twitter_sess = OAuth1Session(client_key=consumer_key,
+                                 client_secret=consumer_secret,
+                                 resource_owner_key=access_token,
+                                 resource_owner_secret=token_secret)
+    url = f"https://api.twitter.com/1.1/statuses/retweet/{tweet_id}.json"
+
+    res = twitter_sess.post(url)
+    if not res.status_code == 200:
+        print(res.status_code)
+        print(res.text)
+        return False
+    return True
+
+
 if __name__=='__main__':
-    query = 'dataset -is:reply -is:retweet -is:quote lang:en has:links'
-    tweets, next_token = query_recent(query, num_tweets=100)
-    for i, tweet in enumerate(tweets):
-        print(i, tweet.json())
+    # query = 'dataset -is:reply -is:retweet -is:quote lang:en has:links'
+    # tweets, next_token = query_recent(query, num_tweets=100)
+    # for i, tweet in enumerate(tweets):
+    #     print(i, tweet.json())
+
+    res = retweet(21)
+    print(res)
 
 

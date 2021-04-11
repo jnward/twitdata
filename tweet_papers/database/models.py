@@ -1,5 +1,5 @@
 # from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import ForeignKey, Column, String, Integer, BigInteger, DateTime, Text
+from sqlalchemy import ForeignKey, Column, String, Integer, BigInteger, DateTime, Text, Boolean
 from sqlalchemy.orm import relationship
 from tweet_papers.database.db import Base
 from datetime import datetime
@@ -61,6 +61,7 @@ class Tweet(Base):
     like_count = Column(Integer)
     quote_count = Column(Integer)
     created_at = Column(DateTime)
+    retweeted = Column(Boolean, default=False)
 
     urls = relationship("URL", backref="tweet")
     author = relationship("TwitterUser", backref="tweets")
