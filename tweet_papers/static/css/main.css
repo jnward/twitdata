@@ -28,11 +28,11 @@ h1 {
     font-family: "Source Serif Pro","Apple Garamond","Baskerville","Libre Baskerville","Times New Roman","Droid Serif","Times",serif;
     //font-family: "Lucidia Console", Courier, monospace;
     //font-family: Helvetica, Arial, sans-serif;
-    font-size: 22px;
+    font-size: calc(8px + 1vh);
 }
 
 .tweet-header {
-    font-size: 22px;
+    font-size: calc(8px + 1vh);
 }
 
 .author-name {
@@ -42,17 +42,17 @@ h1 {
 .author-username {
     color: #808080;
     margin-left: 10px;
-    font-size: 18px;
+    font-size: calc(4px + 1vh);
 
 }
 
 .tweet-link {
     float: right;
-    font-size: 18px;
+    font-size: calc(4px + 1vh);
 }
 
 .application {
-    width: 900px;
+    max-width: 900px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -113,6 +113,13 @@ h1 {
     margin: 9px;
     overflow: hidden;
     font-size: 18px;
+}
+
+@media only screen and (max-width: 700px) {
+
+   .tweet-age-key { 
+      display: none;
+   }
 
 }
 

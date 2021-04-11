@@ -43,7 +43,7 @@ class Tweet extends React.Component {
         for(urlData of this.data.urls) {
             content = content.replace(urlData.url, `<a href=${urlData.expanded_url} target="_blank">${urlData.display_url}</a>`);
         }
-        return <div className="tweet-content" dangerouslySetInnerHTML={{__html: content}}></div>
+        return (<div className="tweet-content" dangerouslySetInnerHTML={{__html: content}}></div>)
     }
 
     generateFooter() {
