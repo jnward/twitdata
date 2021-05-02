@@ -1,5 +1,3 @@
-/*** @jsx React.DOM */
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -27,20 +25,20 @@ class Tweet extends React.Component {
     }
 
     getColor() {
-        let createdAt = new Date(this.data.created_at);
-        let now = new Date();
-        let age = Math.min(7, (now - createdAt) / (1000 * 60 * 60 * 24));  // days
-        let expAge = Math.exp(age/7)/Math.E;
-        let green = 192 + Math.round(12 * (1 - expAge));
-        let red = 192 - Math.round(0 * (1 - age/7)) - Math.round(50 * (1 - expAge));
-        let blue = 192 + Math.round(63 * (1 - expAge));let styleStr = `rgb(${red}, ${green}, ${blue})`;
+        const createdAt = new Date(this.data.created_at);
+        const now = new Date();
+        const age = Math.min(7, (now - createdAt) / (1000 * 60 * 60 * 24));  // days
+        const expAge = Math.exp(age/7)/Math.E;
+        const green = 192 + Math.round(12 * (1 - expAge));
+        const red = 192 - Math.round(0 * (1 - age/7)) - Math.round(50 * (1 - expAge));
+        const blue = 192 + Math.round(63 * (1 - expAge));
+        const styleStr = `rgb(${red}, ${green}, ${blue})`;
         return styleStr;
     }
 
     generateContent() {
-        let urlData;
         let content = this.text;
-        for(urlData of this.data.urls) {
+        for(const urlData of this.data.urls) {
             content = content.replace(urlData.url, `<a href=${urlData.expanded_url} target="_blank">${urlData.display_url}</a>`);
         }
         return (<div className="tweet-content" dangerouslySetInnerHTML={{__html: content}}></div>)
@@ -80,34 +78,28 @@ class TweetContainer extends React.Component {
         super(props);
         this.state = {
             tweets: [],
-            nextToken: 'head'
+            nextToken: 'head',
+            tweetData: [],
         }
-        this.getTweets = this.getTweets.bind(this);
-        this.updateTweets = this.updateTweets.bind(this);
-
         this.getTweets();
     }
 
     updateTweets(data) {
-        let tweets = [];
-        let tweetData;
-        for (tweetData of data) {
-            tweets.push(
-                <Tweet tweet_id={tweetData.id} text={tweetData.text} data={tweetData}/>
-            );
-        }
-        this.setState({tweets: []});
-        this.setState({tweets: tweets});
+        this.setState({'tweetData': []});
+        this.setState({'tweetData': data});
     }
 
     getTweets(sortBy='likes') {
-        let updateTweets = this.updateTweets;
+        console.log(this);
         $.ajax('/query_tweets/' + sortBy, {
-            success: updateTweets,
-            error: function() {
-                console.log('error');
-            }
+            success: (data) => {this.updateTweets(data)},
         });
+    }
+
+    renderTweet(data) {
+        return (
+            <Tweet tweet_id={data.id} text={data.text} data={data}/>
+        );
     }
 
     render() {
@@ -126,7 +118,7 @@ class TweetContainer extends React.Component {
                     </div>
                 </div>
                 <div className="tweet-container-content">
-                    {this.state.tweets}
+                    {this.state.tweetData.map((data) => this.renderTweet(data))}
                 </div>
             </div>
         )
