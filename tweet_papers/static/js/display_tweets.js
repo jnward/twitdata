@@ -18,10 +18,8 @@ class App extends React.Component {
 class Tweet extends React.Component {
     constructor(props) {
         super(props);
-        this.tweet_id = this.props.tweet_id;
-        this.text = this.props.text;
+        this.tweet_id = this.props.key;
         this.data = this.props.data;
-        this.categories = ["Cat1", "Cat2"]
     }
 
     getColor() {
@@ -37,7 +35,7 @@ class Tweet extends React.Component {
     }
 
     generateContent() {
-        let content = this.text;
+        let content = this.data.text;
         for(const urlData of this.data.urls) {
             content = content.replace(urlData.url, `<a href=${urlData.expanded_url} target="_blank">${urlData.display_url}</a>`);
         }
@@ -77,15 +75,12 @@ class TweetContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tweets: [],
-            nextToken: 'head',
             tweetData: [],
         }
         this.getTweets();
     }
 
     updateTweets(data) {
-        //this.setState({'tweetData': []});
         this.setState({'tweetData': data});
     }
 
@@ -98,7 +93,7 @@ class TweetContainer extends React.Component {
 
     renderTweet(data) {
         return (
-            <Tweet key={data.id} text={data.text} data={data}/>
+            <Tweet key={data.id} data={data}/>
         );
     }
 
