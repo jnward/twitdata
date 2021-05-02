@@ -85,7 +85,7 @@ class TweetContainer extends React.Component {
     }
 
     updateTweets(data) {
-        this.setState({'tweetData': []});
+        //this.setState({'tweetData': []});
         this.setState({'tweetData': data});
     }
 
@@ -98,7 +98,7 @@ class TweetContainer extends React.Component {
 
     renderTweet(data) {
         return (
-            <Tweet tweet_id={data.id} text={data.text} data={data}/>
+            <Tweet key={data.id} text={data.text} data={data}/>
         );
     }
 
